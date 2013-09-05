@@ -3,6 +3,7 @@ require 'zlib'
 require 'rack/request'
 require 'rack/response'
 require 'rack/handler/magic_server'
+require 'rack/handler/webrick'
 
 module Rack
   # Paste has a Pony, Rack has a Lobster!
@@ -61,4 +62,5 @@ if $0 == __FILE__
   require 'rack'
   require 'rack/showexceptions'
   Rack::Handler::MagicServer.run(Rack::ShowExceptions.new(Rack::Lint.new(Rack::Lobster.new))) 
+#Rack::Handler::WEBrick.run(Rack::ShowExceptions.new(Rack::Lint.new(Rack::Lobster.new))) 
 end

@@ -67,7 +67,7 @@ module Rack
           env["PATH_INFO"] = path[n, path.length-n]
         end
         env["REQUEST_PATH"] ||= [env["SCRIPT_NAME"], env["PATH_INFO"]].join
-
+        puts env.to_s
         status, headers, body = @app.call(env)
         begin
           res.status = status.to_i
