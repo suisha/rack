@@ -67,8 +67,9 @@ module Rack
           env["PATH_INFO"] = path[n, path.length-n]
         end
         env["REQUEST_PATH"] ||= [env["SCRIPT_NAME"], env["PATH_INFO"]].join
-        puts env.to_s
-        status, headers, body = @app.call(env)
+        a = @app.call(env)
+        puts a.to_s
+        status, headers, body = a
         begin
           res.status = status.to_i
           headers.each { |k, vs|

@@ -10,15 +10,12 @@ module Rack
       attr_accessor :server, :app
 
       def self.run(app, options={})
-        puts 'inside run ' + app.class.to_s
-        @app = app
         @server = MagicServer::Server.new
         @server.mount('/', Rack::Handler::MagicServer.new(app))
         @server.start
       end 
 
       def initialize(app = @app)
-        puts caller(4).to_s
         puts 'instantiated in init ' + app.class.to_s
         @app = app
       end 
@@ -27,6 +24,7 @@ module Rack
         view = ::File.open('lib/rack/handler/test.html', 'r').read
         begin
           a = @app.call(build_env(request))
+          puts a.to_s
         rescue Exception => e
           puts e.to_s
         end 
@@ -47,8 +45,12 @@ module Rack
           r['PATH_INFO'] = request[:path] || ''
           # Not sure how to use this attribute
           r['SCRIPT_NAME'] = ''
+          r['SERVER_NAME'] = request['Host']
+          r['SERVER_PORT'] = request[:server_port]
+          r['QUERY_STRING'] = request[:query_string]
+          r['PATH'] = request[:path]
 
-          rack_input = StringIO.new(request['Body'] || '') 
+          rack_input = StringIO.new((request['Body'] || '').encode('ASCII-8BIT')) 
           # Add rack requirements
           r.update({"rack.version" => Rack::VERSION,
                    "rack.input" => rack_input,
@@ -65,14 +67,14 @@ module Rack
                    "rack.hijack_io" => ''
           })
           # Add http fields
-          r.update({ 'HTTP_HOST' => request['Host'],
-                   'HTTP_CONNECTION' => request['Connection'],
-                   'HTTP_ACCEPT' => request['Accept'],
-                   'HTTP_USER_AGENT' => request['User-Agent'],
-                   'HTTP_ACCEPT_ENCODING' => request['Accept-Encoding'],
-                   'HTTP_ACCEPT_LANGUAGE' => request['Accept-Language'],
-                   'HTTP_COOKIE' => request['Cookie'],
-                   'HTTP_REFERER' => request['Referer'],
+          r.update({ 'HTTP_HOST' => request['Host'].to_s,
+                   'HTTP_CONNECTION' => request['Connection'].to_s,
+                   'HTTP_ACCEPT' => request['Accept'].to_s,
+                   'HTTP_USER_AGENT' => request['User-Agent'].to_s,
+                   'HTTP_ACCEPT_ENCODING' => request['Accept-Encoding'].to_s,
+                   'HTTP_ACCEPT_LANGUAGE' => request['Accept-Language'].to_s,
+                   'HTTP_COOKIE' => request['Cookie'].to_s,
+                   'HTTP_REFERER' => request['Referer'].to_s,
           })
         rescue Exception => e
           puts e.to_s

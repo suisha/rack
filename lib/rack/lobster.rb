@@ -61,6 +61,6 @@ end
 if $0 == __FILE__
   require 'rack'
   require 'rack/showexceptions'
-  Rack::Handler::MagicServer.run(Rack::ShowExceptions.new(Rack::Lint.new(Rack::Lobster.new))) 
-#Rack::Handler::WEBrick.run(Rack::ShowExceptions.new(Rack::Lint.new(Rack::Lobster.new))) 
+  #Rack::Handler::MagicServer.run(Rack::ShowExceptions.new(Rack::Lint.new(Rack::Lobster.new))) 
+  Rack::Handler::WEBrick.run(Rack::ShowExceptions.new(Rack::Lint.new(Rack::Lobster.new))) 
 end
